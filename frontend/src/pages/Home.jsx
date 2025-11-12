@@ -1,6 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Home() {
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState(null);
+  const [error, setError] = useState("");
+
+  const fetchWeather = async () => {
+    try {
+      if (!city.trim()) {
+        setError("Por favor ingresa una ciudad.");
+        return;
+      }
+
+      console.log(`🌍 Enviando solicitud al backend para la ciudad: ${city}`);
+
+      const response = await fetch(`http://localhost:3000/api/clima?city=${city}`);
+      console.log("📡 Respuesta recibida del backend:", response.status);
+
+      if (!response.ok) throw new Error("Error al obtener datos del clima");
+
+      const data = await response.json();
+      console.log("✅ Datos del clima recibidos:", data);
+
+      setWeather(data);
+      setError("");
+    } catch (err) {
+      console.error("❌ Error en fetchWeather:", err);
+      setError("No se pudo obtener la información del clima.");
+    }
+  };
+
   const forecastDays = [
     { day: "Tuesday", icon: "icon-3.svg" },
     { day: "Wednesday", icon: "icon-5.svg" },
@@ -53,8 +82,22 @@ export default function Home() {
         }}
       >
         <div className="container">
-          <form className="find-location" onSubmit={(e) => e.preventDefault()}>
-            <input type="text" placeholder="Find your location..." />
+          <form
+            className="find-location"
+            onSubmit={(e) => {
+              e.preventDefault();
+              fetchWeather();
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Find your location..."
+              value={city}
+              onChange={(e) => {
+                console.log(e.target.value)
+                setCity(e.target.value)
+              }}
+            />
             <input type="submit" value="Find" />
           </form>
         </div>
