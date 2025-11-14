@@ -9,7 +9,6 @@ export default function LiveCameras() {
     fetch("http://localhost:3000/api/clima/capitales")
       .then(res => res.json())
       .then(data => {
-        // Asegúrate de que setCapitales reciba un array
         setCapitales(data.capitales || []); 
         setLoading(false);
       })
