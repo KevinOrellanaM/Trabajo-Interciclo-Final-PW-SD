@@ -77,9 +77,11 @@ export default function LiveCameras() {
                     <div className="live-camera">
                       <figure className="live-camera-cover">
                         <img
-                          src="/images/live-camera-1.jpg"
+                          src={`/images/capitales/${cap.ciudad.toLowerCase().replace(/ /g, "_")}.jpg`}
+                          onError={(e) => e.target.src = "/images/live-camera-1.jpg"} // fallback por si no existe
                           alt={cap.ciudad}
                         />
+
                       </figure>
 
                       <h3 className="location">{cap.ciudad}</h3>
