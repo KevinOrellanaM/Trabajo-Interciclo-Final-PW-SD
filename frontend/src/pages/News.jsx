@@ -65,8 +65,6 @@ export default function News() {
                 ))}
 
               </div>
-
-              {/* Sidebar */}
               <div className="sidebar col-md-3 col-md-offset-1">
                 <div className="widget">
                   <h3 className="widget-title">Hot News</h3>
@@ -82,14 +80,8 @@ export default function News() {
                 <div className="widget">
                   <h3 className="widget-title">Categories</h3>
                   <ul className="arrow-list">
-                    <li><a href="#">Nemo enim ipsam</a></li>
-                    <li><a href="#">Voluptatem voluptas</a></li>
-                    <li><a href="#">Aspernatur aut odit</a></li>
-                    <li><a href="#">Consequuntur magni</a></li>
-                    <li><a href="#">Dolores ratione</a></li>
-                    <li><a href="#">Voluptatem nesciunt</a></li>
-                    <li><a href="#">Neque porro quisquam</a></li>
-                    <li><a href="#">Dolorem ipsum quia</a></li>
+                    <li><a href="#">Tendencias</a></li>
+                    <li><a href="#">Análisis Avanzado</a></li>
                   </ul>
                 </div>
 
