@@ -15,10 +15,9 @@ export default function Header() {
         <nav className="main-navigation">
           <ul className="menu">
             <li className="menu-item"><NavLink to="/">Home</NavLink></li>
-            <li className="menu-item"><NavLink to="/news">News</NavLink></li>
-            <li className="menu-item"><NavLink to="/live-cameras">Live cameras</NavLink></li>
-            <li className="menu-item"><NavLink to="/photos">Photos</NavLink></li>
-            <li className="menu-item"><NavLink to="/contact">Contact</NavLink></li>
+            <li className="menu-item"><NavLink to="/Tendencias">News</NavLink></li>
+            <li className="menu-item"><NavLink to="/Capitales">Live cameras</NavLink></li>
+            <li className="menu-item"><NavLink to="/Nosotros">Contact</NavLink></li>
           </ul>
         </nav>
       </div>
