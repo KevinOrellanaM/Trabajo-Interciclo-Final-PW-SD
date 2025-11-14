@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getTendencias } from "../services/tendencias-service";
+import { getTendencias } from "../services/tendencias-services";
 
 export default function News() {
   const [tendencias, setTendencias] = useState([]);
