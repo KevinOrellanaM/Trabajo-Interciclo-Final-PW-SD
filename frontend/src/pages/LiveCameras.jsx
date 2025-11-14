@@ -6,7 +6,7 @@ export default function LiveCameras() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/clima/capitales")
+    fetch("http://localhost:3000/clima/capitales")
       .then(res => res.json())
       .then(data => {
         setCapitales(data);
