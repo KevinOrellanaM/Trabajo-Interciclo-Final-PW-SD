@@ -6,7 +6,7 @@ export default function Contact() {
       <div className="container">
         <div className="col-md-5">
           <div className="contact-details">
-            <Map />
+            <Map mode = "current"/>
             <div className="contact-info">
               <address>
                 <img src="/images/icon-marker.png" alt="" />
