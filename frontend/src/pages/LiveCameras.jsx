@@ -33,40 +33,6 @@ export default function LiveCameras() {
 
         <div className="fullwidth-block">
           <div className="container">
-
-            {/* Filtros superiores */}
-            <div className="filter">
-              <div className="country filter-control">
-                <label>Country</label>
-                <span className="select control">
-                  <select>
-                    <option value="">All Countries</option>
-                  </select>
-                </span>
-              </div>
-
-              <div className="count filter-control">
-                <label>Show per page</label>
-                <span className="select control">
-                  <select>
-                    {[...Array(10)].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>{i + 1}</option>
-                    ))}
-                  </select>
-                </span>
-              </div>
-
-              <div className="quality filter-control">
-                <label>Only high quality</label>
-                <span className="select control">
-                  <select>
-                    <option value="">Yes</option>
-                    <option value="">No</option>
-                  </select>
-                </span>
-              </div>
-            </div>
-
             {/* Contenido dinámico */}
             {loading ? (
               <p>Cargando clima de capitales...</p>
