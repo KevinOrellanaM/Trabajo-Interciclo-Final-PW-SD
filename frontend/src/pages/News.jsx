@@ -78,7 +78,7 @@ export default function News() {
                 </div>
 
                 <div className="widget">
-                  <h3 className="widget-title">Categories</h3>
+                  <h3 className="widget-title">Categorias</h3>
                   <ul className="arrow-list">
                     <li><a href="#">Tendencias</a></li>
                     <li><a href="#">Análisis Avanzado</a></li>

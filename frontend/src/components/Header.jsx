@@ -7,8 +7,8 @@ export default function Header() {
         <NavLink to="/" className="branding">
           <img src="/images/logo.png" alt="logo" className="logo" />
           <div className="logo-type">
-            <h1 className="site-title">Company Name</h1>
-            <small className="site-description">tagline goes here</small>
+            <h1 className="site-title">Majos Weather</h1>
+            <small className="site-description">App de cosultas de clima</small>
           </div>
         </NavLink>
 

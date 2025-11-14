@@ -46,21 +46,7 @@ export default function Home() {
     }
   };
 
-  const features = [
-    { title: "Natus error sit voluptatem accusantium", desc: "Doloremque laudantium..." },
-    { title: "Sed ut perspiciatis unde omnis", desc: "Ut enim ad minima veniam..." },
-    { title: "Neque porro quisquam est", desc: "Quis autem vel eum iure..." }
-  ];
 
-  const analysis = [
-    "Accusantium doloremque laudantium rem aperiam",
-    "Eaque ipsa quae ab illo inventore veritatis quasi",
-    "Architecto beatae vitae dicta sunt explicabo",
-    "Nemo enim ipsam voluptatem quia voluptas",
-    "Aspernatur aut odit aut fugit, sed quia consequuntur",
-    "Magni dolores eos qui ratione voluptatem sequi",
-    "Neque porro quisquam est qui dolorem ipsum quia"
-  ];
 
   return (
     <>
