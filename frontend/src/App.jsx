@@ -11,10 +11,9 @@ export default function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/news" element={<News />} />
-        <Route path="/live-cameras" element={<LiveCameras />} />
-        <Route path="/photos" element={<Photos />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/News" element={<News />} />
+        <Route path="/LiveCameras" element={<LiveCameras />} />
+        <Route path="/Contact" element={<Contact />} />
       </Routes>
     </Layout>
   );
