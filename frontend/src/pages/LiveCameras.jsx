@@ -6,10 +6,11 @@ export default function LiveCameras() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/clima/capitales")
+    fetch("http://localhost:3000/api/clima/capitales")
       .then(res => res.json())
       .then(data => {
-        setCapitales(data);
+        // Asegúrate de que setCapitales reciba un array
+        setCapitales(data.capitales || []); 
         setLoading(false);
       })
       .catch(err => {
@@ -17,6 +18,7 @@ export default function LiveCameras() {
         setLoading(false);
       });
   }, []);
+
 
   return (
     <div className="site-content">
