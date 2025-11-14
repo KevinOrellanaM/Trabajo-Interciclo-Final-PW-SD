@@ -12,32 +12,24 @@ export default function Home() {
         return;
       }
 
-      console.log(`🌍 Enviando solicitud al backend para la ciudad: ${city}`);
+      console.log(`🌍 Consultando resumen diario para: ${city}`);
 
-      const response = await fetch(`http://localhost:3000/api/clima?city=${city}`);
-      console.log("📡 Respuesta recibida del backend:", response.status);
+      const response = await fetch(
+        `http://localhost:3000/api/clima/resumen-diario?city=${city}`
+      );
 
-      if (!response.ok) throw new Error("Error al obtener datos del clima");
+      if (!response.ok) throw new Error("Error al obtener el resumen del clima");
 
       const data = await response.json();
-      console.log("✅ Datos del clima recibidos:", data);
+      console.log("📊 Resumen diario recibido:", data);
 
-      setWeather(data);
+      setWeather(data); // <-- ahora guardarás { city, resumen: [...] }
       setError("");
     } catch (err) {
       console.error("❌ Error en fetchWeather:", err);
       setError("No se pudo obtener la información del clima.");
     }
   };
-
-  const forecastDays = [
-    { day: "Tuesday", icon: "icon-3.svg" },
-    { day: "Wednesday", icon: "icon-5.svg" },
-    { day: "Thursday", icon: "icon-7.svg" },
-    { day: "Friday", icon: "icon-12.svg" },
-    { day: "Saturday", icon: "icon-13.svg" },
-    { day: "Sunday", icon: "icon-14.svg" },
-  ];
 
   const cameras = [
     { city: "New York", img: "live-camera-1.jpg" },
@@ -104,54 +96,71 @@ export default function Home() {
       </div>
 
       {/* Forecast Section */}
-      <div className="forecast-table">
-        <div className="container">
+      <div className="fullwidth-block">
+        <div className="container"> {/* <-- limita el ancho y centra */}
           <div className="forecast-container">
-            <div className="today forecast">
-              <div className="forecast-header">
-                <div className="day">Monday</div>
-                <div className="date">6 Oct</div>
-              </div>
-              <div className="forecast-content">
-                <div className="location">New York</div>
-                <div className="degree">
-                  <div className="num">
-                    23<sup>°</sup>C
+            {weather && weather.resumen.length > 0 ? (
+              <>
+                {/* Hoy */}
+                <div className="today forecast">
+                  <div className="forecast-header">
+                    <div className="day">
+                      {new Date(weather.resumen[0].fecha).toLocaleDateString("es-EC", { weekday: "long" })}
+                    </div>
+                    <div className="date">
+                      {new Date(weather.resumen[0].fecha).toLocaleDateString("es-EC", { day: "numeric", month: "short" })}
+                    </div>
                   </div>
-                  <div className="forecast-icon">
-                    <img src="/images/icons/icon-1.svg" alt="" width="90" />
+                  <div className="forecast-content">
+                    <div className="location">{weather.city}</div>
+                    <div className="degree">
+                      <div className="num">
+                        {weather.resumen[0].temperatura_promedio}<sup>°</sup>C
+                      </div>
+                      <div className="forecast-icon">
+                        <img src="/images/icons/icon-1.svg" alt="" width="90" />
+                      </div>
+                    </div>
+                    <span>
+                      <img src="/images/icon-umberella.png" alt="" />{weather.resumen[0].humedad_promedio}%
+                    </span>
+                    <span>
+                      <img src="/images/icon-wind.png" alt="" />{weather.resumen[0].viento_promedio} km/h
+                    </span>
+                    <span>
+                      <img src="/images/icon-compass.png" alt="" />{weather.resumen[0].clima_predominante}
+                    </span>
                   </div>
                 </div>
-                <span>
-                  <img src="/images/icon-umberella.png" alt="" />20%
-                </span>
-                <span>
-                  <img src="/images/icon-wind.png" alt="" />18km/h
-                </span>
-                <span>
-                  <img src="/images/icon-compass.png" alt="" />East
-                </span>
-              </div>
-            </div>
 
-            {forecastDays.map((item) => (
-              <div className="forecast" key={item.day}>
-                <div className="forecast-header">
-                  <div className="day">{item.day}</div>
-                </div>
-                <div className="forecast-content">
-                  <div className="forecast-icon">
-                    <img src={`/images/icons/${item.icon}`} alt={item.day} width="48" />
+                {/* Días siguientes */}
+                {weather.resumen.slice(1).map((item, idx) => (
+                  <div className="forecast" key={idx}>
+                    <div className="forecast-header">
+                      <div className="day">
+                        {new Date(item.fecha).toLocaleDateString("es-EC", { weekday: "short" })}
+                      </div>
+                      <div className="date">
+                        {new Date(item.fecha).toLocaleDateString("es-EC", { day: "numeric", month: "short" })}
+                      </div>
+                    </div>
+                    <div className="forecast-content">
+                      <div className="forecast-icon">
+                        <img src="/images/icons/icon-1.svg" alt={item.clima_predominante} width="48" />
+                      </div>
+                      <div className="degree">
+                        {item.temperatura_promedio}<sup>°</sup>C
+                      </div>
+                      <small>
+                        {item.humedad_promedio}<sup>%</sup>
+                      </small>
+                    </div>
                   </div>
-                  <div className="degree">
-                    23<sup>°</sup>C
-                  </div>
-                  <small>
-                    18<sup>°</sup>
-                  </small>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            ) : (
+              <p>Cargando resumen diario...</p>
+            )}
           </div>
         </div>
       </div>
