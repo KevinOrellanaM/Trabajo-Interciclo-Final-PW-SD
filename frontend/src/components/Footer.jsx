@@ -5,8 +5,8 @@ export default function Footer() {
         <div className="row">
           <div className="col-md-8">
             <form className="subscribe-form">
-              <input type="text" placeholder="Enter your email to subscribe..." />
-              <input type="submit" value="Subscribe" />
+              <input type="text" placeholder="Imgresa tu e-mail para suscribirte..." />
+              <input type="submit" value="Enviar" />
             </form>
           </div>
           <div className="col-md-3 col-md-offset-1">
@@ -19,7 +19,7 @@ export default function Footer() {
           </div>
         </div>
         <p className="colophon">
-          Copyright 2025 Company name. Designed by Themezy.
+          Copyright 2025 MajosWeather
         </p>
       </div>
     </footer>

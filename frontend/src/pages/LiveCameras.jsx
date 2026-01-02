@@ -25,8 +25,8 @@ export default function LiveCameras() {
       <main className="main-content">
         <div className="container">
           <div className="breadcrumb">
-            <a href="/">Home</a>
-            <span>Live cameras</span>
+            <a href="/">Inicio</a>
+            <span>Capitales</span>
           </div>
         </div>
 

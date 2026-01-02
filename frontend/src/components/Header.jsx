@@ -14,7 +14,7 @@ export default function Header() {
 
         <nav className="main-navigation">
           <ul className="menu">
-            <li className="menu-item"><NavLink to="/">Home</NavLink></li>
+            <li className="menu-item"><NavLink to="/">Inicio</NavLink></li>
             <li className="menu-item"><NavLink to="/News">Tendencias</NavLink></li>
             <li className="menu-item"><NavLink to="/LiveCameras">Capitales</NavLink></li>
             <li className="menu-item"><NavLink to="/Contact">Nosotros</NavLink></li>

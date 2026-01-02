@@ -65,11 +65,11 @@ export default function Home() {
           >
             <input
               type="text"
-              placeholder="Find your location..."
+              placeholder="Busca una ciudad..."
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            <input type="submit" value="Find" />
+            <input type="submit" value="Buscar" />
           </form>
         </div>
       </div>

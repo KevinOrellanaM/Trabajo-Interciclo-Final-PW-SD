@@ -15,8 +15,8 @@ export default function News() {
       <main className="main-content">
         <div className="container">
           <div className="breadcrumb">
-            <a href="/">Home</a>
-            <span>News</span>
+            <a href="/">Inicio</a>
+            <span>Tendencias</span>
           </div>
         </div>
 
@@ -67,7 +67,7 @@ export default function News() {
               </div>
               <div className="sidebar col-md-3 col-md-offset-1">
                 <div className="widget">
-                  <h3 className="widget-title">Hot News</h3>
+                  <h3 className="widget-title">Primicias</h3>
                   <ul className="arrow-list">
                     <li><a href="#">Accusamus dignissimos</a></li>
                     <li><a href="#">Ducimus praesentium</a></li>
