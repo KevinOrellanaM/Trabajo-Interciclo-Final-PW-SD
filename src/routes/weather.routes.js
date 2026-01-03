@@ -1,9 +1,14 @@
 import express from 'express';
 import { pool } from '../db/connection.js';
+import { getCurrentWeather } from '../services/weather.service.js';
 
 const router = express.Router();
 
-//Clima actual de una ciudad (último registro)
+/**
+ * Clima actual de una ciudad
+ * - Si existe registro del día actual → lo devuelve
+ * - Si no existe o está desactualizado → pide a backend-a, guarda y devuelve
+ */
 router.get('/current', async (req, res) => {
   const { city } = req.query;
 
@@ -12,31 +17,8 @@ router.get('/current', async (req, res) => {
   }
 
   try {
-    const { rows } = await pool.query(
-      `
-      SELECT 
-        city,
-        temperature,
-        humidity,
-        latitude,
-        longitude,
-        source,
-        timestamp
-      FROM weather_data
-      WHERE city = $1
-      ORDER BY timestamp DESC
-      LIMIT 1
-      `,
-      [city]
-    );
-
-    if (!rows.length) {
-      return res.status(404).json({
-        message: 'No hay datos para esta ciudad'
-      });
-    }
-
-    res.json(rows[0]);
+    const weather = await getCurrentWeather(city);
+    res.json(weather);
   } catch (error) {
     console.error('Error /current:', error);
     res.status(500).json({
@@ -45,7 +27,9 @@ router.get('/current', async (req, res) => {
   }
 });
 
-//Obtener el hitsorial del clima de una ciudad
+/**
+ * Historial completo del clima de una ciudad
+ */
 router.get('/history', async (req, res) => {
   const { city } = req.query;
 
@@ -80,7 +64,9 @@ router.get('/history', async (req, res) => {
   }
 });
 
-//Guardar una ciudad en favoritas
+/**
+ * Guardar una ciudad en favoritas
+ */
 router.post('/favorite', async (req, res) => {
   const { city } = req.body;
 
@@ -109,7 +95,9 @@ router.post('/favorite', async (req, res) => {
   }
 });
 
-//Eliminar una ciudad de favoritas
+/**
+ * Eliminar una ciudad de favoritas
+ */
 router.delete('/favorite/:city', async (req, res) => {
   const { city } = req.params;
 

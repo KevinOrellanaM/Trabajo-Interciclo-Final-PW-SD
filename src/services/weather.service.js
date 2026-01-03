@@ -1,4 +1,7 @@
 import { pool } from '../db/connection.js';
+import axios from 'axios';
+
+const BACKEND_A_URL = 'http://backend_a:8000';
 
 export async function saveWeather(data) { // Función para guardar datos
   const { 
@@ -36,4 +39,36 @@ export async function saveWeather(data) { // Función para guardar datos
   } catch (error) {
     console.error('Error guardando clima:', error.message);
   }
+}
+
+export async function getCurrentWeather(city) {
+  const { rows } = await pool.query(
+    `
+    SELECT *
+    FROM weather_data
+    WHERE city = $1
+    ORDER BY timestamp DESC
+    LIMIT 1
+    `,
+    [city]
+  );
+
+  const today = new Date().toISOString().split('T')[0];
+
+  if (rows.length) {
+    const lastDate = rows[0].timestamp.toISOString().split('T')[0];
+    if (lastDate === today) {
+      return rows[0];
+    }
+  }
+
+  // 🚀 Solo dispara la recolección
+  await axios.get(
+    `http://backend_a:8000/collect/${encodeURIComponent(city)}`
+  );
+
+  return {
+    message: 'Datos en proceso de actualización',
+    city
+  };
 }
