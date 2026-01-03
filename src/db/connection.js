@@ -1,16 +1,14 @@
 import pkg from 'pg';
-const { Pool } = pkg; //importa el manejador de PostgreSQL
-import dotenv from 'dotenv';
-
-dotenv.config(); // para manejar el .env
+const { Pool } = pkg; // Para manejar PostgreSQL 
 
 // creación de un conjunto de conexiones reutilizables
 // -> soportar múltiples conexiones simultáneas
 // -> evitar abrir/cerrar conexiones constantemente
-export const pool = new Pool({  // exporta para que otros archivos lo usen.
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+export const pool = new Pool({
+  host: process.env.DB_HOST || 'postgres',
+  user: process.env.DB_USER || 'weather_user',
+  password: process.env.DB_PASSWORD || 'weather_pass',
+  database: process.env.DB_NAME || 'weather_db',
+  port: Number(process.env.DB_PORT) || 5432,
 });
+

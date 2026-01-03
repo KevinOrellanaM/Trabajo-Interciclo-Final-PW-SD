@@ -6,33 +6,39 @@ import { saveForecast } from './forecast.service.js';
 dotenv.config();
 
 export async function startRabbitConsumer() {
-  const connection = await amqp.connect(process.env.RABBITMQ_URL);
-  const channel = await connection.createChannel();
-
-  await channel.assertQueue(process.env.RABBITMQ_QUEUE, {
-    durable: true
-  });
-
-  console.log('Escuchando cola RabbitMQ...');
-
-  channel.consume(process.env.RABBITMQ_QUEUE, async (msg) => {
-    if (!msg) return;
-
+  while (true) {
     try {
-      const data = JSON.parse(msg.content.toString());
+      const rabbitUrl = process.env.RABBITMQ_URL || 'amqp://guest:guest@rabbitmq:5672';
+      const connection = await amqp.connect(rabbitUrl);
+      const channel = await connection.createChannel();
 
-      // Enrutamiento por tipo de mensaje
-      if (data.type === 'forecast') {
-        await saveForecast(data);
-      } else {
-        await saveWeather(data);
-      }
+      await channel.assertQueue(process.env.RABBITMQ_QUEUE, { durable: true });
 
-      channel.ack(msg); // ✔️ Mensaje procesado correctamente
+      console.log('Escuchando cola RabbitMQ...');
+      
+      channel.consume(process.env.RABBITMQ_QUEUE, async (msg) => {
+        if (!msg) return;
+
+        try {
+          const data = JSON.parse(msg.content.toString());
+
+          if (data.type === 'forecast') {
+            await saveForecast(data);
+          } else {
+            await saveWeather(data);
+          }
+
+          channel.ack(msg);
+        } catch (err) {
+          console.error('Error procesando mensaje:', err.message);
+        }
+      });
+
+      break; // ✔️ sale del loop si conecta bien
     } catch (error) {
-      console.error('Error procesando mensaje:', error.message);
-
-      // No hacemos ack → RabbitMQ lo reintenta
+      console.log('RabbitMQ no disponible, reintentando en 5s...');
+      await new Promise(res => setTimeout(res, 5000));
     }
-  });
+  }
 }
+
