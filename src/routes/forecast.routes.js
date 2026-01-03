@@ -3,7 +3,7 @@ import { pool } from '../db/connection.js';
 
 const router = express.Router();
 
-router.get('/forecast', async (req, res) => {
+router.get('/forecast', async (req, res) => { // Función para obtener el forecast de una ciudad
   const { city } = req.query;
 
   const { rows } = await pool.query(
@@ -24,3 +24,5 @@ router.get('/forecast', async (req, res) => {
 
   res.json(rows);
 });
+
+export default router;

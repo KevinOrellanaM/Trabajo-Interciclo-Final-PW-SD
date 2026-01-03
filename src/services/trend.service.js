@@ -1,6 +1,6 @@
 import { pool } from '../db/connection.js';
 
-export async function getTemperatureTrend(city, days = 7) {
+export async function getTemperatureTrend(city, days = 7) { // función para obtener la predicciónn de temperatura de una ciudad
   const { rows } = await pool.query(
     `
     SELECT
