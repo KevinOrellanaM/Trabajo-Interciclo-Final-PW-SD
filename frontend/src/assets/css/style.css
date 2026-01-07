@@ -1312,6 +1312,14 @@ form textarea {
     font-weight: 300;
     color: white; }
 
+
+.num {
+  display: inline-block;
+  margin-top: 50px;   /* mueve hacia abajo */
+  margin-left: 8px;   /* mueve a la derecha */
+}
+
+
 .filter {
   margin-bottom: 30px; }
 
@@ -1386,8 +1394,11 @@ form textarea {
     font-weight: 300; }
 
 .news {
-  padding-left: 100px;
-  position: relative; }
+  padding-left: 50px;
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+  line-height: 1.5em; }
   .news:after {
     content: " ";
     width: 12px;
@@ -1404,8 +1415,8 @@ form textarea {
   .news h3 {
     font-size: 14px;
     font-size: 1em; }
-    .news h3 a {
-      color: white; }
+  .news h3 a {
+    color: white; }
 
 .arrow-feature {
   list-style-type: none; }
