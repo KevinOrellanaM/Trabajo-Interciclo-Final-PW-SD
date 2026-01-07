@@ -1,52 +1,41 @@
 import React, { useState, useEffect } from "react";
 import Map from "../components/Map";
+import { getForecast } from "../services/weatherServices";
 
 export default function Home() {
   const [city, setCity] = useState("");
-  const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
   const [error, setError] = useState("");
 
   // Cargar última ciudad consultada
   useEffect(() => {
-    const ultima = localStorage.getItem("ultimaCiudad");
-    if (ultima) {
-      setCity(ultima);
-      fetchWeather(ultima);
+    const ultimaCiudad = localStorage.getItem("ultimaCiudad");
+    if (ultimaCiudad) {
+      setCity(ultimaCiudad);
+      fetchForecast(ultimaCiudad);
     }
   }, []);
 
-  const fetchWeather = async (ciudadParam) => {
+  const fetchForecast = async (ciudadParam) => {
     try {
-      const ciudadAConsultar = ciudadParam || city;
+      const ciudad = ciudadParam || city;
 
-      if (!ciudadAConsultar.trim()) {
+      if (!ciudad.trim()) {
         setError("Por favor ingresa una ciudad.");
         return;
       }
 
-      console.log(`Consultando resumen diario para: ${ciudadAConsultar}`);
+      // Compartir ciudad con otras vistas (Tendencias, Historial, etc.)
+      localStorage.setItem("ultimaCiudad", ciudad);
 
-      // Guardar en LocalStorage
-      localStorage.setItem("ultimaCiudad", ciudadAConsultar);
-
-      const response = await fetch(
-        `http://localhost:3000/api/clima/resumen-diario?city=${ciudadAConsultar}`
-      );
-
-      if (!response.ok) throw new Error("Error al obtener el resumen del clima");
-
-      const data = await response.json();
-      console.log("Resumen diario recibido:", data);
-
-      setWeather(data);
+      const data = await getForecast(ciudad);
+      setForecast(data);
       setError("");
     } catch (err) {
-      console.error("Error en fetchWeather:", err);
-      setError("No se pudo obtener la información del clima.");
+      console.error(err);
+      setError("No se pudo obtener la predicción del clima.");
     }
   };
-
-
 
   return (
     <>
@@ -60,7 +49,7 @@ export default function Home() {
             className="find-location"
             onSubmit={(e) => {
               e.preventDefault();
-              fetchWeather();
+              fetchForecast();
             }}
           >
             <input
@@ -71,6 +60,8 @@ export default function Home() {
             />
             <input type="submit" value="Buscar" />
           </form>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
       </div>
 
@@ -78,66 +69,83 @@ export default function Home() {
       <div className="fullwidth-block">
         <div className="container">
           <div className="forecast-container">
-            {weather && weather.resumen?.length > 0 ? (
+            {forecast && forecast.resumen?.length > 0 ? (
               <>
                 {/* Hoy */}
                 <div className="today forecast">
                   <div className="forecast-header">
                     <div className="day">
-                      {new Date(weather.resumen[0].fecha).toLocaleDateString("es-EC", {
-                        weekday: "long"
+                      {new Date(
+                        forecast.resumen[0].fecha
+                      ).toLocaleDateString("es-EC", {
+                        weekday: "long",
                       })}
                     </div>
                     <div className="date">
-                      {new Date(weather.resumen[0].fecha).toLocaleDateString("es-EC", {
+                      {new Date(
+                        forecast.resumen[0].fecha
+                      ).toLocaleDateString("es-EC", {
                         day: "numeric",
-                        month: "short"
+                        month: "short",
                       })}
                     </div>
                   </div>
+
                   <div className="forecast-content">
-                    <div className="location">{weather.city}</div>
+                    <div className="location">{city}</div>
                     <div className="degree">
                       <div className="num">
-                        {weather.resumen[0].temperatura_promedio}
+                        {forecast.resumen[0].temperatura_promedio}
                         <sup>°</sup>C
                       </div>
                       <div className="forecast-icon">
-                        <img src="/images/icons/icon-1.svg" alt="" width="90" />
+                        <img
+                          src="/images/icons/icon-1.svg"
+                          alt=""
+                          width="90"
+                        />
                       </div>
                     </div>
+
                     <span>
                       <img src="/images/icon-umberella.png" alt="" />
-                      {weather.resumen[0].humedad_promedio}%
+                      {forecast.resumen[0].humedad_promedio}%
                     </span>
                     <span>
                       <img src="/images/icon-wind.png" alt="" />
-                      {weather.resumen[0].viento_promedio} km/h
+                      {forecast.resumen[0].viento_promedio} km/h
                     </span>
                     <span>
                       <img src="/images/icon-compass.png" alt="" />
-                      {weather.resumen[0].clima_predominante}
+                      {forecast.resumen[0].clima_predominante}
                     </span>
                   </div>
                 </div>
 
                 {/* Días siguientes */}
-                {weather.resumen.slice(1).map((item, idx) => (
+                {forecast.resumen.slice(1).map((item, idx) => (
                   <div className="forecast" key={idx}>
                     <div className="forecast-header">
                       <div className="day">
-                        {new Date(item.fecha).toLocaleDateString("es-EC", { weekday: "short" })}
+                        {new Date(item.fecha).toLocaleDateString("es-EC", {
+                          weekday: "short",
+                        })}
                       </div>
                       <div className="date">
                         {new Date(item.fecha).toLocaleDateString("es-EC", {
                           day: "numeric",
-                          month: "short"
+                          month: "short",
                         })}
                       </div>
                     </div>
+
                     <div className="forecast-content">
                       <div className="forecast-icon">
-                        <img src="/images/icons/icon-1.svg" alt="" width="48" />
+                        <img
+                          src="/images/icons/icon-1.svg"
+                          alt=""
+                          width="48"
+                        />
                       </div>
                       <div className="degree">
                         {item.temperatura_promedio}
@@ -154,11 +162,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Mapa debajo del clima */}
-        {weather?.lat && weather?.lon && (
+        {/* Mapa */}
+        {forecast?.lat && forecast?.lon && (
           <div className="container" style={{ marginTop: "40px" }}>
-            <h2 className="section-title">Ubicación en el mapa</h2>
-            <Map mode="city" lat={weather.lat} lng={weather.lon} />
+            <Map mode="city" lat={forecast.lat} lng={forecast.lon} />
           </div>
         )}
       </div>

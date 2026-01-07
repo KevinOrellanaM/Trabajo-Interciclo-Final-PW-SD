@@ -1,111 +1,82 @@
 import React, { useEffect, useState } from "react";
-import { getTendencias } from "../services/tendencias-services";
+import { getTrend } from "../services/weatherServices";
 
 export default function News() {
-  const [tendencias, setTendencias] = useState([]);
+  const [trend, setTrend] = useState(null);
+  const [city, setCity] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    getTendencias().then(data => {
-      setTendencias(data);
-    });
+    const ultimaCiudad = localStorage.getItem("ultimaCiudad");
+
+    if (!ultimaCiudad) {
+      setError("No se ha seleccionado ninguna ciudad.");
+      return;
+    }
+
+    setCity(ultimaCiudad);
+
+    getTrend(ultimaCiudad)
+      .then((data) => setTrend(data))
+      .catch(() =>
+        setError("No se pudo obtener la tendencia de temperatura.")
+      );
   }, []);
 
   return (
-    <>
-      <main className="main-content">
+    <main className="main-content">
+      <div className="container">
+        <div className="breadcrumb">
+          <a href="/">Inicio</a>
+          <span>Tendencias</span>
+        </div>
+      </div>
+
+      <div className="fullwidth-block">
         <div className="container">
-          <div className="breadcrumb">
-            <a href="/">Inicio</a>
-            <span>Tendencias</span>
-          </div>
-        </div>
+          <h2 className="section-title">
+            Tendencia de temperatura — {city}
+          </h2>
 
-        <div className="fullwidth-block">
-          <div className="container">
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          {trend && (
             <div className="row">
-
-              {/* Contenido principal */}
-              <div className="content col-md-8">
-
-                {/* Generar noticias desde el backend */}
-                {tendencias.map((item, idx) => (
-                  <div className="post" key={idx}>
-                    <h2 className="entry-title">
-                      Clima en {item.ciudad}
-                    </h2>
-
-                    <div className="featured-image">
-                      <img src="images/featured-image-1.jpg" alt="" />
-                    </div>
-
-                    {"temperatura" in item ? (
-                      <p>
-                        Temperatura actual: <strong>{item.temperatura}°C</strong><br />
-                        Humedad: <strong>{item.humedad}%</strong><br />
-                        Calidad del aire: <strong>{item.calidad_aire}</strong><br />
-                        Fecha: <strong>{item.fecha}</strong>
-                      </p>
-                    ) : (
-                      <p>
-                        Promedio temperatura: <strong>{item.temperatura_promedio}°C</strong><br />
-                        Promedio viento: <strong>{item.viento_promedio} m/s</strong><br />
-                        Promedio UV: <strong>{item.uv_promedio}</strong><br />
-                        Radiación promedio: <strong>{item.radiacion_promedio}</strong><br />
-                        Tendencia temperatura: <strong>{item.tendencia_temperatura}</strong><br />
-                        Tendencia viento: <strong>{item.tendencia_viento}</strong><br />
-                        Tendencia UV: <strong>{item.tendencia_uv}</strong><br />
-                        Tendencia radiación: <strong>{item.tendencia_radiacion}</strong>
-                      </p>
-                    )}
-
-                    <a href="#" className="button">
-                      Leer más
-                    </a>
-                  </div>
-                ))}
-
-              </div>
-              <div className="sidebar col-md-3 col-md-offset-1">
+              <div className="col-md-4">
                 <div className="widget">
-                  <h3 className="widget-title">Primicias</h3>
-                  <ul className="arrow-list">
-                    <li><a href="#">Accusamus dignissimos</a></li>
-                    <li><a href="#">Ducimus praesentium</a></li>
-                    <li><a href="#">Voluptatum deleniti corrupti</a></li>
-                    <li><a href="#">Wuos dolores excepturi sint</a></li>
-                    <li><a href="#">Occaecati provident dolor</a></li>
-                  </ul>
-                </div>
-
-                <div className="widget">
-                  <h3 className="widget-title">Categorias</h3>
-                  <ul className="arrow-list">
-                    <li><a href="#">Tendencias</a></li>
-                    <li><a href="#">Análisis Avanzado</a></li>
-                  </ul>
-                </div>
-
-                <div className="widget top-rated">
-                  <h3 className="widget-title">Top rated posts</h3>
-                  <ul>
-                    <li>
-                      <h3 className="entry-title">
-                        <a href="#">Doloremque laudantium lorem</a>
-                      </h3>
-                      <div className="rating">
-                        <strong>5.5</strong> (759 rates)
-                      </div>
-                    </li>
-                    {/* repetición omitida */}
-                  </ul>
+                  <h3>Promedio</h3>
+                  <p>{trend.temperatura_promedio} °C</p>
                 </div>
               </div>
 
+              <div className="col-md-4">
+                <div className="widget">
+                  <h3>Tendencia</h3>
+                  <p
+                    style={{
+                      color:
+                        trend.tendencia === "sube"
+                          ? "green"
+                          : trend.tendencia === "baja"
+                          ? "red"
+                          : "gray",
+                    }}
+                  >
+                    {trend.tendencia.toUpperCase()}
+                  </p>
+                </div>
+              </div>
+
+              <div className="col-md-4">
+                <div className="widget">
+                  <h3>Días analizados</h3>
+                  <p>{trend.dias}</p>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
-

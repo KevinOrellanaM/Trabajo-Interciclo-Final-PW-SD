@@ -1,74 +1,75 @@
 import React, { useEffect, useState } from "react";
+import { getHistory } from "../services/weatherServices";
 
-export default function LiveCameras() {
-
-  const [capitales, setCapitales] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function Historial() {
+  const [history, setHistory] = useState([]);
+  const [city, setCity] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/clima/capitales")
-      .then(res => res.json())
-      .then(data => {
-        setCapitales(data.capitales || []); 
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error cargando /clima/capitales:", err);
-        setLoading(false);
-      });
+    const ultimaCiudad = localStorage.getItem("ultimaCiudad");
+
+    if (!ultimaCiudad) {
+      setError("No se ha seleccionado ninguna ciudad.");
+      return;
+    }
+
+    setCity(ultimaCiudad);
+
+    getHistory(ultimaCiudad)
+      .then((data) => setHistory(data))
+      .catch(() =>
+        setError("No se pudo obtener el historial climático.")
+      );
   }, []);
 
-
   return (
-    <div className="site-content">
+    <main className="main-content">
+      {/* Breadcrumb */}
+      <div className="container">
+        <div className="breadcrumb">
+          <a href="/">Inicio</a>
+          <span>Historial</span>
+        </div>
+      </div>
 
-      <main className="main-content">
+      {/* Contenido principal */}
+      <div className="fullwidth-block">
         <div className="container">
-          <div className="breadcrumb">
-            <a href="/">Inicio</a>
-            <span>Capitales</span>
-          </div>
+          <h2 className="section-title">
+            Historial climático — {city}
+          </h2>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          {history.length > 0 ? (
+            <div className="table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Temperatura (°C)</th>
+                    <th>Humedad (%)</th>
+                    <th>Viento (km/h)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{item.fecha}</td>
+                      <td>{item.temperatura}</td>
+                      <td>{item.humedad}</td>
+                      <td>{item.viento}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            !error && <p>Cargando historial...</p>
+          )}
         </div>
-
-        <div className="fullwidth-block">
-          <div className="container">
-            {/* Contenido dinámico */}
-            {loading ? (
-              <p>Cargando clima de capitales...</p>
-            ) : (
-              <div className="row">
-                {capitales.map((cap, index) => (
-                  <div className="col-md-3 col-sm-6" key={index}>
-                    <div className="live-camera">
-                      <figure className="live-camera-cover">
-                        <img
-                          src={`/images/capitales/${cap.ciudad.toLowerCase().replace(/ /g, "_")}.jpg`}
-                          onError={(e) => e.target.src = "/images/live-camera-1.jpg"} // fallback por si no existe
-                          alt={cap.ciudad}
-                        />
-
-                      </figure>
-
-                      <h3 className="location">{cap.ciudad}</h3>
-
-                      <small className="date">
-                        Temp: {cap.temperatura}°C — Humedad: {cap.humedad}%
-                      </small>
-
-                      <br />
-                      <small className="date">
-                        Fecha: {new Date(cap.fecha).toLocaleString()}
-                      </small>
-
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-          </div>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
