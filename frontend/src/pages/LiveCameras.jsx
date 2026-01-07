@@ -5,22 +5,35 @@ export default function Historial() {
   const [history, setHistory] = useState([]);
   const [city, setCity] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const ultimaCiudad = localStorage.getItem("ultimaCiudad");
 
     if (!ultimaCiudad) {
       setError("No se ha seleccionado ninguna ciudad.");
+      setLoading(false);
       return;
     }
 
     setCity(ultimaCiudad);
 
     getHistory(ultimaCiudad)
-      .then((data) => setHistory(data))
+      .then((data) => {
+        // 🔹 Adaptar datos del backend
+        const formattedHistory = data.map(item => ({
+          fecha: new Date(item.timestamp).toLocaleString(),
+          temperatura: Number(item.temperature).toFixed(1),
+          humedad: item.humidity,
+          fuente: item.source
+        }));
+
+        setHistory(formattedHistory);
+      })
       .catch(() =>
         setError("No se pudo obtener el historial climático.")
-      );
+      )
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -42,15 +55,17 @@ export default function Historial() {
 
           {error && <p style={{ color: "red" }}>{error}</p>}
 
-          {history.length > 0 ? (
-            <div className="table-responsive">
+          {loading && <p>Cargando historial...</p>}
+
+          {!loading && history.length > 0 && (
+            <div className="table weather-table">
               <table className="table">
                 <thead>
                   <tr>
                     <th>Fecha</th>
                     <th>Temperatura (°C)</th>
                     <th>Humedad (%)</th>
-                    <th>Viento (km/h)</th>
+                    <th>Fuente</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -59,14 +74,16 @@ export default function Historial() {
                       <td>{item.fecha}</td>
                       <td>{item.temperatura}</td>
                       <td>{item.humedad}</td>
-                      <td>{item.viento}</td>
+                      <td>{item.fuente}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          ) : (
-            !error && <p>Cargando historial...</p>
+          )}
+
+          {!loading && history.length === 0 && !error && (
+            <p>No hay registros históricos disponibles.</p>
           )}
         </div>
       </div>

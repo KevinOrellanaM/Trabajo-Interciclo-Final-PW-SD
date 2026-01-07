@@ -1685,3 +1685,69 @@ form textarea {
     .site-footer .social-links a:hover {
       background: #009ad8;
       color: white; }
+
+
+.weather-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.weather-table thead {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.weather-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #cfe7ff;
+  font-size: 14px;
+}
+
+.weather-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #e4e9f0;
+}
+
+.weather-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.weather-table tbody tr:hover {
+  background: rgba(0, 154, 216, 0.12);
+  transition: background 0.2s ease;
+}
+
+/* Temperatura destacada */
+.weather-table td:nth-child(2) {
+  font-weight: 600;
+  color: #ffcc70;
+}
+
+/* Humedad */
+.weather-table td:nth-child(3) {
+  color: #7dd3fc;
+}
+
+/* Fuente con badge */
+.weather-table td:nth-child(4) {
+  font-weight: 500;
+}
+
+.weather-table td:nth-child(4)::before {
+  content: "● ";
+  color: #009ad8;
+}
+
+
+.section-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
