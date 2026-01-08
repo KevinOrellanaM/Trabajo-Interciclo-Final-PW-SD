@@ -50,9 +50,11 @@ export default function Home() {
 
       setSearched(true);
 
+      // 👉 Exponer ciudad globalmente (como antes)
+      localStorage.setItem("ultimaCiudad", ciudad);
+
       const data = await getForecast(ciudad);
 
-      // Normalización: un solo registro por fecha
       const uniqueByDate = Object.values(
         data.reduce((acc, item) => {
           const dateKey = item.forecast_date.split("T")[0];
@@ -65,12 +67,13 @@ export default function Home() {
       setCity(ciudad);
       setError("");
     } catch (err) {
-      console.error(err);
       setError("No se pudo obtener la predicción del clima.");
       setForecast([]);
       setSearched(false);
     }
   };
+
+
 
   return (
     <>
