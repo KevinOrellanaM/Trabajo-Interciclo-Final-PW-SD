@@ -136,11 +136,6 @@ export default function News() {
                 <div className="forecast today">
                   <div className="forecast-header">
                     <div className="day">Evolución de temperatura</div>
-                    <div className="date">
-                      {trend.data?.length
-                        ? formatDate(trend.data[0].day)
-                        : "-"}
-                    </div>
                   </div>
 
                   <div

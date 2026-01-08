@@ -9,13 +9,35 @@ export default function Home() {
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
 
-  // Cargar última ciudad consultada
+  /**
+   * Restaurar forecast desde localStorage al montar la vista
+   */
   useEffect(() => {
-    const ultimaCiudad = localStorage.getItem("ultimaCiudad");
-    if (ultimaCiudad) {
-      setCity(ultimaCiudad);
+    const cached = localStorage.getItem("forecast_cache");
+
+    if (cached) {
+      const { city, data } = JSON.parse(cached);
+      setCity(city);
+      setForecast(data);
+      setSearched(true);
     }
   }, []);
+
+  /**
+   * Guardar forecast en localStorage cada vez que se actualiza
+   */
+  useEffect(() => {
+    if (forecast.length > 0 && city) {
+      localStorage.setItem(
+        "forecast_cache",
+        JSON.stringify({
+          city,
+          data: forecast,
+          savedAt: Date.now()
+        })
+      );
+    }
+  }, [forecast, city]);
 
   const fetchForecast = async (cityParam) => {
     try {
@@ -27,7 +49,6 @@ export default function Home() {
       }
 
       setSearched(true);
-      localStorage.setItem("ultimaCiudad", ciudad);
 
       const data = await getForecast(ciudad);
 
@@ -41,11 +62,13 @@ export default function Home() {
       );
 
       setForecast(uniqueByDate);
+      setCity(ciudad);
       setError("");
     } catch (err) {
       console.error(err);
       setError("No se pudo obtener la predicción del clima.");
       setForecast([]);
+      setSearched(false);
     }
   };
 
@@ -56,7 +79,10 @@ export default function Home() {
         className="hero"
         style={{ backgroundImage: "url('/images/banner.png')" }}
       >
-        <div className="container" style={{ textAlign: "center", padding: "60px 20px" }}>
+        <div
+          className="container"
+          style={{ textAlign: "center", padding: "60px 20px" }}
+        >
           <form
             className="find-location"
             onSubmit={(e) => {
@@ -83,10 +109,7 @@ export default function Home() {
                 outline: "none",
                 width: "800px",
                 fontSize: "16px",
-                transition: "0.3s",
               }}
-              onFocus={(e) => (e.target.style.boxShadow = "0 0 8px rgba(0,0,0,0.3)")}
-              onBlur={(e) => (e.target.style.boxShadow = "none")}
             />
             <button
               type="submit"
@@ -98,10 +121,7 @@ export default function Home() {
                 color: "white",
                 fontSize: "16px",
                 cursor: "pointer",
-                transition: "0.3s",
               }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#009ad8")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#2bafe3ff")}
             >
               Buscar
             </button>
